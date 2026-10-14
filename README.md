@@ -19,6 +19,8 @@
 | `{title}`   | название (с годом, если включена опция) |
 | `{year}`    | год выпуска |
 | `{kp_id}`   | ID фильма на Кинопоиске |
+| `{type}`    | тип страницы: `film` или `series` |
+| `{kp_path}` | путь на Кинопоиске: `film/258687` или `series/258687` |
 
 Значения подставляются в URL-кодировке. Шаблон должен начинаться с `http://` или `https://`.
 
@@ -27,7 +29,7 @@
 ```
 https://www.themoviedb.org/search?query={title}
 https://example.com/search?q={title}&year={year}
-https://www.kinopoisk.ru/film/{kp_id}/
+https://www.kinopoisk.ru/{type}/{kp_id}/
 ```
 
 Под полем ввода показывается пример готовой ссылки.

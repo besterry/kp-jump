@@ -31,7 +31,7 @@ function showTemplate() {
     $("preview").textContent = "Шаблон должен начинаться с http:// или https://";
     $("preview").className = "err";
   } else if (custom && t) {
-    $("preview").textContent = "Пример: " + kpjBuildUrl(t, { title: "Интерстеллар", year: "2014", kpId: "258687" });
+    $("preview").textContent = "Пример: " + kpjBuildUrl(t, { title: "Интерстеллар", year: "2014", kpId: "258687", type: "film" });
     $("preview").className = "";
   } else {
     $("preview").textContent = "";

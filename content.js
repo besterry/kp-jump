@@ -3,9 +3,10 @@
   const BTN_ID = "kp-jump-btn";
 
   function getFilmInfo() {
-    const m = location.pathname.match(/^\/(?:film|series)\/(\d+)/);
+    const m = location.pathname.match(/^\/(film|series)\/(\d+)/);
     if (!m) return null;
-    const kpId = m[1];
+    const type = m[1];
+    const kpId = m[2];
 
     let title = "";
     const h1 = document.querySelector("h1");
@@ -20,7 +21,7 @@
     if (!title) {
       title = document.title.replace(/\s*\(.*$/, "").trim();
     }
-    return title ? { title, year, kpId } : null;
+    return title ? { title, year, kpId, type } : null;
   }
 
   async function getSettings() {

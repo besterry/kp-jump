@@ -2,6 +2,8 @@
 //   {title}  — название фильма (URL-кодируется)
 //   {year}   — год выпуска
 //   {kp_id}  — ID с Кинопоиска
+//   {type}   — тип страницы: film или series
+//   {kp_path} — путь на Кинопоиске: film/123 или series/123
 globalThis.KPJ_PRESETS = {
   tmdb: {
     label: "TMDB (поиск)",
@@ -35,7 +37,9 @@ globalThis.kpjBuildUrl = function (templateStr, data) {
   return templateStr
     .replace(/\{title\}/g, encodeURIComponent(data.title))
     .replace(/\{year\}/g, encodeURIComponent(data.year || ""))
-    .replace(/\{kp_id\}/g, encodeURIComponent(data.kpId || ""));
+    .replace(/\{kp_id\}/g, encodeURIComponent(data.kpId || ""))
+    .replace(/\{type\}/g, encodeURIComponent(data.type || ""))
+    .replace(/\{kp_path\}/g, data.type && data.kpId ? `${data.type}/${data.kpId}` : "");
 };
 
 // Шаблон должен быть http(s)-ссылкой (защита от javascript: и т.п.)
