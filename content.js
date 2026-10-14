@@ -24,15 +24,37 @@
     return title ? { title, year, kpId, type } : null;
   }
 
+  // После обновления/перезагрузки расширения старый скрипт на открытой странице
+  // «осиротевает»: api.runtime.id пропадает, обращение к storage бросает
+  // "Extension context invalidated". Тогда тихо отключаемся.
+  function isAlive() {
+    try { return !!api?.runtime?.id; } catch { return false; }
+  }
+
+  function shutdown() {
+    observer.disconnect();
+    window.removeEventListener("popstate", schedule);
+    document.getElementById(BTN_ID)?.remove();
+  }
+
   async function getSettings() {
-    const stored = await api.storage.sync.get(KPJ_DEFAULTS);
-    return { ...KPJ_DEFAULTS, ...stored };
+    if (!isAlive()) throw new Error("context-invalidated");
+    try {
+      const stored = await api.storage.sync.get(KPJ_DEFAULTS);
+      return { ...KPJ_DEFAULTS, ...stored };
+    } catch (e) {
+      if (!isAlive()) throw new Error("context-invalidated");
+      console.warn("KP Jump: не удалось прочитать настройки, используются значения по умолчанию", e);
+      return { ...KPJ_DEFAULTS };
+    }
   }
 
   async function onClick() {
     const info = getFilmInfo();
     if (!info) return;
-    const s = await getSettings();
+    let s;
+    try { s = await getSettings(); }
+    catch { alert("KP Jump: расширение было обновлено. Обновите страницу (F5)."); shutdown(); return; }
     const tpl = kpjResolveTemplate(s);
     if (!tpl) {
       alert("KP Jump: свой шаблон ссылки не задан или некорректен. Откройте настройки расширения.");
@@ -52,7 +74,9 @@
       return;
     }
     if (existing) return;
-    const s = await getSettings();
+    let s;
+    try { s = await getSettings(); } catch { shutdown(); return; }
+    if (document.getElementById(BTN_ID)) return;
     const btn = document.createElement("button");
     btn.id = BTN_ID;
     btn.type = "button";
@@ -79,12 +103,13 @@
   let timer = null;
   const schedule = () => {
     if (timer) return;
-    timer = setTimeout(() => { timer = null; ensureButton(); }, 300);
+    timer = setTimeout(() => { timer = null; ensureButton().catch(() => {}); }, 300);
   };
-  new MutationObserver(schedule).observe(document.documentElement, {
+  const observer = new MutationObserver(schedule);
+  observer.observe(document.documentElement, {
     childList: true,
     subtree: true
   });
   window.addEventListener("popstate", schedule);
-  ensureButton();
+  ensureButton().catch(() => {});
 })();
