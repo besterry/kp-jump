@@ -1,15 +1,22 @@
 {
   "manifest_version": 3,
   "name": "KP Jump",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Кнопка на карточке Кинопоиска: переход на выбранный вами сервис (TMDB, IMDb, Letterboxd, JustWatch).",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "permissions": [
     "storage"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://www.kinopoisk.ru/*"
+        "https://www.kinopoisk.ru/*",
+        "https://kinopoisk.ru/*"
       ],
       "js": [
         "presets.js",
@@ -23,7 +30,13 @@
     "open_in_tab": true
   },
   "action": {
-    "default_title": "KP Jump: настройки"
+    "default_title": "KP Jump: настройки",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
   },
   "background": {
     "service_worker": "background.js"

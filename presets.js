@@ -30,7 +30,13 @@ globalThis.KPJ_DEFAULTS = {
   customTemplate: "",
   includeYear: false,
   newTab: true,
-  buttonText: "Смотреть"
+  buttonText: "Смотреть",
+  buttonPosition: "inline"
+};
+
+globalThis.kpjPresetLabel = function (s) {
+  if (s.preset === KPJ_CUSTOM_KEY) return "Свой шаблон";
+  return (KPJ_PRESETS[s.preset] || KPJ_PRESETS[KPJ_DEFAULTS.preset]).label;
 };
 
 globalThis.kpjBuildUrl = function (templateStr, data) {
